@@ -68,10 +68,16 @@ jobs:
           command: d1 migrations apply rag-db --remote
         continue-on-error: true # Don't fail if migrations already applied
 
-      - name: Build with Cloudflare
-        run: npm run pages:build
+      - name: Build Next.js
+        run: npm run build
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          NODE_ENV: production
+
+      - name: Build for Cloudflare Pages
+        run: npx @cloudflare/next-on-pages
+        env:
+          NODE_ENV: production
 
       - name: Deploy to Cloudflare Pages
         uses: cloudflare/wrangler-action@v3
