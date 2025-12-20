@@ -7,9 +7,45 @@ on:
   workflow_dispatch:
 
 jobs:
+  setup-resources:
+    runs-on: ubuntu-latest
+    name: Setup Cloudflare Resources (one-time)
+    # Only run if manually triggered
+    if: github.event_name == 'workflow_dispatch'
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Create D1 Database
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: d1 create rag-db
+        continue-on-error: true
+
+      - name: Create Vectorize Index
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: vectorize create rag-embeddings --dimensions=1536 --metric=cosine
+        continue-on-error: true
+
+      - name: Create R2 Bucket
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: r2 bucket create rag-files
+        continue-on-error: true
+
   deploy:
     runs-on: ubuntu-latest
-    name: Deploy to Cloudflare Pages
+    name: Build and Deploy
+    needs: [setup-resources]
+    if: always() # Run even if setup-resources is skipped
 
     steps:
       - name: Checkout
@@ -23,6 +59,14 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
+
+      - name: Run D1 Migrations
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: d1 migrations apply rag-db --remote
+        continue-on-error: true # Don't fail if migrations already applied
 
       - name: Build with Cloudflare
         run: npm run pages:build
