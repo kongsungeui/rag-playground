@@ -1,16 +1,29 @@
 // File parsers for PDF and Markdown
 
-import PDFParse from 'pdf-parse';
-import { remark } from 'remark';
-import remarkHtml from 'remark-html';
+import * as pdfjsLib from 'pdfjs-dist';
 
 /**
- * Extract text from PDF file
+ * Extract text from PDF file using pdfjs-dist (Edge runtime compatible)
  */
 export async function extractTextFromPDF(buffer: Buffer): Promise<string> {
   try {
-    const data = await PDFParse(buffer);
-    return data.text;
+    // Load PDF document
+    const loadingTask = pdfjsLib.getDocument({ data: buffer });
+    const pdf = await loadingTask.promise;
+
+    const textParts: string[] = [];
+
+    // Extract text from each page
+    for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
+      const page = await pdf.getPage(pageNum);
+      const textContent = await page.getTextContent();
+      const pageText = textContent.items
+        .map((item: any) => item.str)
+        .join(' ');
+      textParts.push(pageText);
+    }
+
+    return textParts.join('\n\n');
   } catch (error) {
     throw new Error(`Failed to parse PDF: ${error instanceof Error ? error.message : 'Unknown error'}`);
   }
