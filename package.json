@@ -7,27 +7,39 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
+    "pages:build": "npx @cloudflare/next-on-pages",
+    "preview": "npm run pages:build && wrangler pages dev .vercel/output/static",
+    "deploy": "npm run pages:build && wrangler pages deploy .vercel/output/static",
+    "cf:d1:migrate": "wrangler d1 migrations apply rag-db --remote",
+    "cf:d1:migrate:local": "wrangler d1 migrations apply rag-db --local",
     "ingest": "ts-node scripts/ingest.ts"
   },
   "dependencies": {
-    "@supabase/supabase-js": "^2.86.0",
     "dotenv": "^16.6.1",
     "next": "16.0.7",
     "openai": "^6.9.1",
     "pdf-parse": "^2.4.5",
     "react": "19.2.0",
-    "react-dom": "19.2.0"
+    "react-dom": "19.2.0",
+    "react-dropzone": "^14.3.5",
+    "remark": "^15.0.1",
+    "remark-html": "^16.0.1"
   },
   "devDependencies": {
+    "@cloudflare/next-on-pages": "^1",
+    "@cloudflare/workers-types": "^4",
     "@tailwindcss/postcss": "^4",
     "@types/dotenv": "^8.2.3",
     "@types/node": "^20",
+    "@types/pdf-parse": "^1.1.4",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.0.7",
     "tailwindcss": "^4",
     "ts-node": "^10.9.2",
-    "typescript": "^5"
+    "typescript": "^5",
+    "wrangler": "^3",
+    "vercel": "^39"
   }
 }
