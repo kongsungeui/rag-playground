@@ -60,7 +60,7 @@ export async function POST(req: NextRequest) {
     console.log(`Found ${searchResults.matches.length} matches`);
 
     // 3. Fetch chunk details from D1
-    const chunkIds = searchResults.matches.map((match) => match.id);
+    const chunkIds = searchResults.matches.map((match: any) => match.id);
     const placeholders = chunkIds.map(() => '?').join(',');
 
     const chunksResult = await db
@@ -74,7 +74,7 @@ export async function POST(req: NextRequest) {
       .all();
 
     // 4. Build context and sources
-    const sources = searchResults.matches.map((match, index) => {
+    const sources = searchResults.matches.map((match: any, index: number) => {
       const chunk = chunksResult.results.find(
         (c: any) => c.vectorize_id === match.id
       );
