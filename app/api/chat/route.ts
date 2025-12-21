@@ -18,6 +18,15 @@ interface VectorizeMatch {
   };
 }
 
+// Type for source information
+interface Source {
+  content: string;
+  document_id: number;
+  filename: string;
+  chunk_index: number;
+  similarity: number;
+}
+
 export async function POST(req: NextRequest) {
   try {
     // Get Cloudflare bindings
@@ -84,7 +93,7 @@ export async function POST(req: NextRequest) {
       .all();
 
     // 4. Build context and sources
-    const sources = searchResults.matches.map((match: VectorizeMatch, index: number) => {
+    const sources: Source[] = searchResults.matches.map((match: VectorizeMatch, index: number) => {
       const chunk = chunksResult.results.find(
         (c: any) => c.vectorize_id === match.id
       );
