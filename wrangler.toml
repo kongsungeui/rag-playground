@@ -6,7 +6,7 @@ pages_build_output_dir = ".vercel/output/static"
 [[d1_databases]]
 binding = "DB"
 database_name = "rag-db"
-database_id = "placeholder" # Will be replaced after creating D1 database
+database_id = "afee09bc-e2ed-4296-a8f0-534c9c5a8e78"
 
 # Vectorize Index Binding
 [[vectorize]]
