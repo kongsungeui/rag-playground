@@ -381,7 +381,7 @@ function DocumentsTab() {
         <StatCard
           icon="💾"
           label="총 용량"
-          value={(stats?.total_size / 1024 / 1024 || 0).toFixed(2)}
+          value={((stats?.total_size ?? 0) / 1024 / 1024).toFixed(2)}
           unit="MB"
         />
       </div>
