@@ -1,5 +1,6 @@
 name = "rag-playground"
-compatibility_date = "2024-12-01"
+compatibility_date = "2024-11-01"
+compatibility_flags = ["nodejs_compat"]
 pages_build_output_dir = ".vercel/output/static"
 
 # D1 Database Binding
@@ -22,6 +23,3 @@ bucket_name = "rag-files"
 [vars]
 # OpenAI API key should be set as a secret:
 # wrangler secret put OPENAI_API_KEY
-
-# Compatibility flags for Cloudflare Pages
-compatibility_flags = ["nodejs_compat"]
