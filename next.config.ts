@@ -5,10 +5,12 @@ const nextConfig: NextConfig = {
   images: {
     unoptimized: true,
   },
-  // Generate build trace for Cloudflare adapter
-  outputFileTracingRoot: process.cwd(),
-  // Ensure proper output for Cloudflare Pages
-  output: 'standalone',
+  // Disable experimental features that may cause issues
+  experimental: {
+    serverActions: {
+      bodySizeLimit: '2mb',
+    },
+  },
 };
 
 export default nextConfig;
