@@ -23,9 +23,5 @@ bucket_name = "rag-files"
 # OpenAI API key should be set as a secret:
 # wrangler secret put OPENAI_API_KEY
 
-# Node.js compatibility for Next.js
-[build]
-command = "npm run build"
-
 # Compatibility flags for Cloudflare Pages
 compatibility_flags = ["nodejs_compat"]
