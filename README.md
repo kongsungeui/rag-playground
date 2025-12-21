@@ -113,9 +113,44 @@ npm run dev
 
 ### 9. Cloudflare Pages 배포
 
-```bash
-npm run deploy
-```
+**방법 1: Cloudflare Dashboard 사용 (권장)**
+
+1. [Cloudflare Dashboard](https://dash.cloudflare.com) → **Workers & Pages** → **Create application** → **Pages** → **Connect to Git**
+
+2. GitHub 저장소 선택: `kongsungeui/rag-playground`
+
+3. 빌드 설정:
+   - **Framework preset**: Next.js
+   - **Build command**: `npm run build`
+   - **Build output directory**: `.next`
+   - **Root directory**: (비워두기)
+
+4. 환경 변수 추가:
+   - `NODE_VERSION`: `20`
+   - `OPENAI_API_KEY`: (여기에 OpenAI API 키 입력)
+
+5. **Deploy** 클릭
+
+6. 첫 배포 완료 후, **Settings** → **Functions** → **Bindings**에서 추가:
+   - **D1 database bindings**:
+     - Variable name: `DB`
+     - D1 database: `rag-db`
+   - **Vectorize bindings**:
+     - Variable name: `VECTORIZE`
+     - Index: `rag-embeddings`
+   - **R2 bindings**:
+     - Variable name: `FILES`
+     - Bucket: `rag-files`
+
+7. **Redeploy**로 바인딩 적용
+
+**방법 2: GitHub Actions로 리소스만 생성**
+
+리포지토리에 Secrets 추가:
+- `CLOUDFLARE_API_TOKEN`
+- `CLOUDFLARE_ACCOUNT_ID`
+
+Actions 탭에서 "Setup Cloudflare Resources" 워크플로우 수동 실행
 
 ## 📁 프로젝트 구조
 
