@@ -292,7 +292,7 @@ function UploadTab() {
             <p>타입: {uploadResult.document?.file_type?.toUpperCase()}</p>
             <p>청크 수: {uploadResult.document?.chunk_count}개</p>
             <p>
-              파일 크기: {(uploadResult.document?.file_size / 1024).toFixed(1)}{" "}
+              파일 크기: {((uploadResult.document?.file_size ?? 0) / 1024).toFixed(1)}{" "}
               KB
             </p>
           </div>
