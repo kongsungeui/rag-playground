@@ -8,8 +8,8 @@ import { ChatRequest, ChatResponse } from '@/env';
 // Force edge runtime for Cloudflare Pages
 export const runtime = 'edge';
 
-// Type for Vectorize search match
-interface VectorizeMatch {
+// Type for Vectorize search result
+interface SearchMatch {
   id: string;
   score: number;
   metadata?: {
@@ -79,7 +79,7 @@ export async function POST(req: NextRequest) {
     console.log(`Found ${searchResults.matches.length} matches`);
 
     // 3. Fetch chunk details from D1
-    const chunkIds = searchResults.matches.map((match: VectorizeMatch) => match.id);
+    const chunkIds = searchResults.matches.map((match: SearchMatch) => match.id);
     const placeholders = chunkIds.map(() => '?').join(',');
 
     const chunksResult = await db
@@ -93,7 +93,7 @@ export async function POST(req: NextRequest) {
       .all();
 
     // 4. Build context and sources
-    const sources: Source[] = searchResults.matches.map((match: VectorizeMatch, index: number) => {
+    const sources: Source[] = searchResults.matches.map((match: SearchMatch, index: number) => {
       const chunk = chunksResult.results.find(
         (c: any) => c.vectorize_id === match.id
       );
