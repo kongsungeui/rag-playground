@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getEnv } from '@/lib/cloudflare';
 import { detectFileType, extractText, validateFileSize } from '@/lib/parsers';
 import { processDocument } from '@/lib/embeddings';
-import { UploadResponse } from '@/env';
+import { UploadResponse, Document } from '@/env';
 
 // Force edge runtime for Cloudflare Pages
 export const runtime = 'edge';
@@ -140,7 +140,7 @@ export async function POST(request: NextRequest) {
     const updatedDoc = await db
       .prepare('SELECT * FROM documents WHERE id = ?')
       .bind(documentId)
-      .first();
+      .first() as any as Document;
 
     console.log(`Successfully processed document ${documentId} with ${chunks.length} chunks`);
 
