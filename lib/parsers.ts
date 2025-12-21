@@ -9,27 +9,9 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdn.jsdelivr.net/npm/pdfjs-dis
  * Extract text from PDF file using pdfjs-dist (Edge runtime compatible)
  */
 export async function extractTextFromPDF(buffer: Buffer): Promise<string> {
-  try {
-    // Load PDF document
-    const loadingTask = pdfjsLib.getDocument({ data: buffer });
-    const pdf = await loadingTask.promise;
-
-    const textParts: string[] = [];
-
-    // Extract text from each page
-    for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
-      const page = await pdf.getPage(pageNum);
-      const textContent = await page.getTextContent();
-      const pageText = textContent.items
-        .map((item: any) => item.str)
-        .join(' ');
-      textParts.push(pageText);
-    }
-
-    return textParts.join('\n\n');
-  } catch (error) {
-    throw new Error(`Failed to parse PDF: ${error instanceof Error ? error.message : 'Unknown error'}`);
-  }
+  // TEMPORARY: PDF.js doesn't work in Edge runtime
+  // TODO: Implement client-side PDF parsing
+  throw new Error('PDF parsing is temporarily disabled. Please use Markdown files (.md) for now.');
 }
 
 /**
