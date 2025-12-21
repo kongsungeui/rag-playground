@@ -2,6 +2,7 @@
 
 import { useState, useCallback, useEffect } from "react";
 import { useDropzone } from "react-dropzone";
+import { extractTextFromPDFClient } from "@/lib/pdf-client";
 import type { ChatResponse, StatsResponse, UploadResponse, DeleteResponse } from "@/env";
 
 type Tab = "chat" | "upload" | "documents";
@@ -209,6 +210,16 @@ function UploadTab() {
     try {
       const formData = new FormData();
       formData.append("file", file);
+
+      // For PDF files, extract text on the client side
+      if (file.type === "application/pdf" || file.name.toLowerCase().endsWith(".pdf")) {
+        try {
+          const extractedText = await extractTextFromPDFClient(file);
+          formData.append("extractedText", extractedText);
+        } catch (pdfError) {
+          throw new Error(`PDF parsing failed: ${pdfError instanceof Error ? pdfError.message : 'Unknown error'}`);
+        }
+      }
 
       const res = await fetch("/api/upload", {
         method: "POST",

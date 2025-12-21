@@ -23,6 +23,7 @@ export async function POST(request: NextRequest) {
     // Parse multipart form data
     const formData = await request.formData();
     const file = formData.get('file') as File;
+    const extractedText = formData.get('extractedText') as string | null;
 
     if (!file) {
       return NextResponse.json(
@@ -53,8 +54,16 @@ export async function POST(request: NextRequest) {
     const buffer = Buffer.from(arrayBuffer);
 
     // Extract text from file
-    console.log(`Extracting text from ${fileType} file: ${file.name}`);
-    const text = await extractText(buffer, fileType);
+    let text: string;
+    if (extractedText) {
+      // Use pre-extracted text from client (for PDF files)
+      console.log(`Using pre-extracted text from client for ${fileType} file: ${file.name}`);
+      text = extractedText;
+    } else {
+      // Extract text on server (for Markdown files)
+      console.log(`Extracting text from ${fileType} file: ${file.name}`);
+      text = await extractText(buffer, fileType);
+    }
 
     if (!text || text.trim().length === 0) {
       return NextResponse.json(
