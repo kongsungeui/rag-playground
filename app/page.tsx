@@ -2,6 +2,7 @@
 
 import { useState, useCallback, useEffect } from "react";
 import { useDropzone } from "react-dropzone";
+import type { ChatResponse, StatsResponse, UploadResponse, DeleteResponse } from "@/env";
 
 type Tab = "chat" | "upload" | "documents";
 
@@ -85,7 +86,7 @@ function ChatTab() {
   const [query, setQuery] = useState("");
   const [answer, setAnswer] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const [sources, setSources] = useState<any[]>([]);
+  const [sources, setSources] = useState<ChatResponse['sources']>([]);
   const [error, setError] = useState<string | null>(null);
 
   const onSubmit = async (e: React.FormEvent) => {
@@ -101,7 +102,7 @@ function ChatTab() {
         body: JSON.stringify({ query }),
       });
 
-      const data = await res.json();
+      const data = (await res.json()) as ChatResponse & { error?: string };
 
       if (!res.ok) {
         throw new Error(data.error || "Failed to get answer");
@@ -194,7 +195,7 @@ function ChatTab() {
 // Upload Tab Component
 function UploadTab() {
   const [uploading, setUploading] = useState(false);
-  const [uploadResult, setUploadResult] = useState<any>(null);
+  const [uploadResult, setUploadResult] = useState<UploadResponse | null>(null);
   const [uploadError, setUploadError] = useState<string | null>(null);
 
   const onDrop = useCallback(async (acceptedFiles: File[]) => {
@@ -214,7 +215,7 @@ function UploadTab() {
         body: formData,
       });
 
-      const data = await res.json();
+      const data = (await res.json()) as UploadResponse;
 
       if (!res.ok) {
         throw new Error(data.error || "Upload failed");
@@ -303,7 +304,7 @@ function UploadTab() {
 
 // Documents Tab Component
 function DocumentsTab() {
-  const [stats, setStats] = useState<any>(null);
+  const [stats, setStats] = useState<StatsResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [deleting, setDeleting] = useState<number | "all" | null>(null);
 
@@ -311,7 +312,7 @@ function DocumentsTab() {
     setLoading(true);
     try {
       const res = await fetch("/api/documents");
-      const data = await res.json();
+      const data = (await res.json()) as StatsResponse;
       setStats(data);
     } catch (err) {
       console.error("Failed to load stats:", err);
