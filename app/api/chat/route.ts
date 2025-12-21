@@ -100,9 +100,9 @@ export async function POST(req: NextRequest) {
       );
 
       return {
-        content: chunk?.content || '',
+        content: String(chunk?.content || ''),
         document_id: match.metadata?.document_id || 0,
-        filename: chunk?.filename || 'Unknown',
+        filename: String(chunk?.filename || 'Unknown'),
         chunk_index: match.metadata?.chunk_index || 0,
         similarity: match.score || 0,
       };
