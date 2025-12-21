@@ -1,13 +1,11 @@
 /// <reference types="@cloudflare/workers-types" />
 
 // Cloudflare bindings for Next.js on Pages
-declare global {
-  interface CloudflareEnv {
-    DB: D1Database;
-    VECTORIZE: VectorizeIndex;
-    FILES: R2Bucket;
-    OPENAI_API_KEY: string;
-  }
+export interface CloudflareEnv {
+  DB: D1Database;
+  VECTORIZE: VectorizeIndex;
+  FILES: R2Bucket;
+  OPENAI_API_KEY: string;
 }
 
 // Document types
