@@ -2,6 +2,9 @@
 
 import * as pdfjsLib from 'pdfjs-dist';
 
+// Configure PDF.js worker for Cloudflare Pages
+pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.worker.min.js`;
+
 /**
  * Extract text from PDF file using pdfjs-dist (Edge runtime compatible)
  */
