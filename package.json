@@ -26,7 +26,7 @@
     "remark-html": "^16.0.1"
   },
   "devDependencies": {
-    "@cloudflare/next-on-pages": "^1",
+    "@cloudflare/next-on-pages": "^1.13.16",
     "@cloudflare/workers-types": "^4",
     "@tailwindcss/postcss": "^4",
     "@types/dotenv": "^8.2.3",
@@ -38,8 +38,8 @@
     "tailwindcss": "^4",
     "ts-node": "^10.9.2",
     "typescript": "^5",
-    "wrangler": "^3",
-    "vercel": "^39"
+    "vercel": "^39",
+    "wrangler": "^3"
   },
   "overrides": {
     "react": "19.2.0",
