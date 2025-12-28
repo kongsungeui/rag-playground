@@ -65,7 +65,7 @@ export async function POST(req: NextRequest) {
         messages: [
           {
             role: 'user',
-            content: `다음 질문에 답변해주세요:\n\n"${query}"\n\n참고할 문서가 없으니, 일반적인 지식으로 답변해주세요. 답변은 한국어로 해주세요.`,
+            content: `다음 질문에 답변해주세요:\n\n"${query}"\n\n**참고: 이 질문과 관련된 참고 문서를 찾지 못했습니다.** 일반적인 지식을 바탕으로 답변해주세요. 답변 시작 부분에 "참고 문서 없음"이라고 명시하고, 한국어로 답변해주세요.`,
           },
         ],
       });
@@ -115,10 +115,10 @@ export async function POST(req: NextRequest) {
 
 ${contextText}
 
-위 내용을 참고해서 사용자 질문에 답변해줘.
+**참고: 위 내용은 관련된 참고 문서에서 가져온 내용입니다.** 위 내용을 참고해서 사용자 질문에 답변해줘.
 질문: "${query}"
 
-답변은 한국어로, 너무 장황하지 않게 해줘.`;
+답변 시작 부분에 "참고 문서 있음"이라고 명시하고, 한국어로 너무 장황하지 않게 답변해줘.`;
 
     console.log('Generating answer with LLM');
 
