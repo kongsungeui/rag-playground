@@ -37,6 +37,7 @@ export interface UploadResponse {
 
 export interface ChatRequest {
   query: string;
+  threshold?: number; // Similarity threshold (0-100), default 40
 }
 
 export interface ChatResponse {

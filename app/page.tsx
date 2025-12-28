@@ -85,6 +85,7 @@ function TabButton({
 // Chat Tab Component
 function ChatTab() {
   const [query, setQuery] = useState("");
+  const [threshold, setThreshold] = useState(40);
   const [answer, setAnswer] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [sources, setSources] = useState<ChatResponse['sources']>([]);
@@ -100,7 +101,7 @@ function ChatTab() {
       const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ query }),
+        body: JSON.stringify({ query, threshold }),
       });
 
       const data = (await res.json()) as ChatResponse & { error?: string };
@@ -133,6 +134,23 @@ function ChatTab() {
               onChange={(e) => setQuery(e.target.value)}
               placeholder="업로드한 문서에 대해 질문해보세요..."
             />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+              유사도 기준 (0-100) - 현재: {threshold}%
+            </label>
+            <input
+              type="range"
+              min="0"
+              max="100"
+              value={threshold}
+              onChange={(e) => setThreshold(Number(e.target.value))}
+              className="w-full h-2 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-blue-600"
+            />
+            <div className="flex justify-between text-xs text-slate-500 dark:text-slate-400 mt-1">
+              <span>낮음 (0%)</span>
+              <span>높음 (100%)</span>
+            </div>
           </div>
           <button
             type="submit"

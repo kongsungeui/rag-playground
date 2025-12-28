@@ -40,10 +40,18 @@ export async function POST(req: NextRequest) {
     }
 
     // Parse request
-    const { query } = (await req.json()) as ChatRequest;
+    const { query, threshold = 40 } = (await req.json()) as ChatRequest;
 
     if (!query || query.trim().length === 0) {
       return NextResponse.json({ error: 'Query is required' }, { status: 400 });
+    }
+
+    // Validate threshold
+    if (threshold < 0 || threshold > 100) {
+      return NextResponse.json(
+        { error: 'Threshold must be between 0 and 100' },
+        { status: 400 }
+      );
     }
 
     // 1. Create query embedding
@@ -57,8 +65,8 @@ export async function POST(req: NextRequest) {
       returnMetadata: true,
     });
 
-    // Filter by similarity threshold (0.4 or higher)
-    const SIMILARITY_THRESHOLD = 0.4;
+    // Filter by similarity threshold (convert 0-100 to 0-1)
+    const SIMILARITY_THRESHOLD = threshold / 100;
     const filteredMatches = searchResults.matches?.filter(
       (match) => (match as SearchMatch).score >= SIMILARITY_THRESHOLD
     );
