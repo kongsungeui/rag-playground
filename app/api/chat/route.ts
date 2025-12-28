@@ -57,8 +57,14 @@ export async function POST(req: NextRequest) {
       returnMetadata: true,
     });
 
-    if (!searchResults.matches || searchResults.matches.length === 0) {
-      // No matches found
+    // Filter by similarity threshold (0.6 or higher)
+    const SIMILARITY_THRESHOLD = 0.6;
+    const filteredMatches = searchResults.matches?.filter(
+      (match) => (match as SearchMatch).score >= SIMILARITY_THRESHOLD
+    );
+
+    if (!filteredMatches || filteredMatches.length === 0) {
+      // No matches found above threshold
       const openai = new OpenAI({ apiKey: openaiApiKey });
       const completion = await openai.chat.completions.create({
         model: 'gpt-4o-mini',
@@ -76,10 +82,10 @@ export async function POST(req: NextRequest) {
       } as ChatResponse);
     }
 
-    console.log(`Found ${searchResults.matches.length} matches`);
+    console.log(`Found ${filteredMatches.length} matches above similarity threshold (${SIMILARITY_THRESHOLD})`);
 
     // 3. Fetch chunk details from D1
-    const matches = searchResults.matches as unknown as SearchMatch[];
+    const matches = filteredMatches as unknown as SearchMatch[];
     const chunkIds = matches.map((match) => match.id);
     const placeholders = chunkIds.map(() => '?').join(',');
 
