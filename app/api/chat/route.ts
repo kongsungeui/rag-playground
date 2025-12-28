@@ -57,8 +57,8 @@ export async function POST(req: NextRequest) {
       returnMetadata: true,
     });
 
-    // Filter by similarity threshold (0.6 or higher)
-    const SIMILARITY_THRESHOLD = 0.6;
+    // Filter by similarity threshold (0.4 or higher)
+    const SIMILARITY_THRESHOLD = 0.4;
     const filteredMatches = searchResults.matches?.filter(
       (match) => (match as SearchMatch).score >= SIMILARITY_THRESHOLD
     );
